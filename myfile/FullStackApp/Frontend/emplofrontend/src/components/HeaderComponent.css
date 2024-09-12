@@ -1,0 +1,42 @@
+.header {
+    background-color: var(--pagelayer-color-primary);
+    color: white;
+    padding: 0.5rem 1rem;
+    font-family: var(--pagelayer-font-primary-font-family);
+  }
+  
+  .navbar {
+    padding: 0.5rem 1rem;
+  }
+  
+  .navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .navbar-toggler {
+    border-color: transparent;
+  }
+  
+  .navbar-toggler-icon {
+    background-image: url('data:image/svg+xml;charset=utf8,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"%3E%3Cpath fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7"/%3E%3C/svg%3E');
+  }
+  
+  .navbar-nav .nav-item {
+    margin-left: 1rem;
+  }
+  
+  .nav-link {
+    color: white;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  
+  .nav-link:hover {
+    color: var(--pagelayer-color-accent);
+  }
+  
+  .navbar-nav.ms-auto {
+    margin-left: auto;
+  }
+  
