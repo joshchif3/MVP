@@ -1,0 +1,3 @@
+[submodule "FullStackApp"]
+	path = FullStackApp
+	url = https://github.com/joshchif3/MVP.git
