@@ -21,6 +21,10 @@ const HeaderComponent = () => {
             <li className="nav-item">
               <Link className="nav-link" to="/expenses">Expenses</Link>
             </li>
+            {/* Add the Landing Page Link here */}
+            <li className="nav-item">
+              <Link className="nav-link" to="/landing">Landing Page</Link>
+            </li>
           </ul>
         </div>
       </nav>

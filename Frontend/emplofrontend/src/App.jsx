@@ -1,3 +1,4 @@
+// src/App.js
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import EmployeeComponent from "./components/EmployeeComponent.jsx";
@@ -10,6 +11,7 @@ import PayslipPage from './components/payslipPage.jsx';
 import EmployeeReportPage from './components/EmployeeReportPage.jsx';
 import ExpensesTable from './components/ExpensesTable.jsx';
 import ExpenseForm from './components/ExpenseForm.jsx';
+import LandingPage from './components/LandingPage'; // Import Landing Page
 
 function App() {
     return (
@@ -28,10 +30,11 @@ function App() {
                 <Route path="/expenses" element={<ExpensesTable />} />
                 <Route path="/add-expense" element={<ExpenseForm />} />
                 <Route path="/edit-expense/:id" element={<ExpenseForm />} />
+                <Route path="/landing" element={<LandingPage />} /> {/* New Route */}
             </Routes>
             <FooterComponent />
         </BrowserRouter>
     );
 }
 
-export default App;  
+export default App;
