@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { getPayrollById, updatePayroll } from '../services/payrollService'; // Adjust import path as needed
+import React, { useEffect, useState } from 'react'; 
+import { getPayrollById, updatePayroll, updateEmployee } from '../services/payrollService'; // Adjust import path as needed
 import { useNavigate, useParams } from 'react-router-dom';
 
 const MAX_LEAVE_DAYS_PER_MONTH = 1.5;
@@ -16,17 +16,11 @@ const PayrollUpdatePage = () => {
     const [leaveStartDate, setLeaveStartDate] = useState('');
     const [leaveEndDate, setLeaveEndDate] = useState('');
     const [leaveStatus, setLeaveStatus] = useState('');
+    const [deductions, setDeductions] = useState('');
+    const [rebate, setRebate] = useState('');
 
     // State variable for form errors
-    const [errors, setErrors] = useState({
-        name: '',
-        surname: '',
-        company: '',
-        salary: '',
-        leaveStartDate: '',
-        leaveEndDate: '',
-        leaveStatus: ''
-    });
+    const [errors, setErrors] = useState({});
 
     // Fetch payroll data if id is provided
     useEffect(() => {
@@ -39,7 +33,8 @@ const PayrollUpdatePage = () => {
                 setSalary(data.salary || '');
                 setLeaveStartDate(data.leaveStartDate || '');
                 setLeaveEndDate(data.leaveEndDate || '');
-                setLeaveStatus(data.leaveStatus || '');
+                setDeductions(data.deductions || '');
+                setRebate(data.rebate || '');
             }).catch(error => {
                 console.error(error);
             });
@@ -58,183 +53,143 @@ const PayrollUpdatePage = () => {
         }
     }
 
-    // Save or update payroll data
-    function saveOrUpdatePayroll(e) {
-        e.preventDefault();
+    // Handle form submission
+    const handleSubmit = async (event) => {
+        event.preventDefault();
 
-        if (validateForm()) {
-            const payroll = { 
-                name, 
-                surname, 
-                company, 
-                salary, 
-                leaveStartDate, 
-                leaveEndDate,
-                leaveStatus
-            };
+        // Validate form fields
+        const newErrors = {};
+        if (!name) newErrors.name = 'Name is required';
+        if (!surname) newErrors.surname = 'Surname is required';
+        if (!company) newErrors.company = 'Company is required';
+        if (!salary || isNaN(salary) || salary <= 0) newErrors.salary = 'Salary must be a positive number';
+        if (!leaveStartDate) newErrors.leaveStartDate = 'Leave Start Date is required';
+        if (!leaveEndDate) newErrors.leaveEndDate = 'Leave End Date is required';
+        if (!deductions || isNaN(deductions) || deductions < 0) newErrors.deductions = 'Deductions must be a non-negative number';
+        if (!rebate || isNaN(rebate) || rebate < 0) newErrors.rebate = 'Rebate must be a non-negative number';
 
-            if (id) {
-                updatePayroll(id, payroll).then(() => {
-                    navigate('/payrolls');
-                }).catch(error => {
-                    console.error(error);
-                });
-            } else {
-                // Handle create payroll if necessary
-            }
-        }
-    }
+        setErrors(newErrors);
 
-    function validateForm() {
-        let valid = true;
-        const errorsCopy = { ...errors };
-    
-        if (name.trim()) {
-            errorsCopy.name = '';
-        } else {
-            errorsCopy.name = 'Name is required';
-            valid = false;
-        }
-    
-        if (surname.trim()) {
-            errorsCopy.surname = '';
-        } else {
-            errorsCopy.surname = 'Surname is required';
-            valid = false;
-        }
-    
-        if (company.trim()) {
-            errorsCopy.company = '';
-        } else {
-            errorsCopy.company = 'Company is required';
-            valid = false;
-        }
-    
-        if (salary.toString().trim()) {
-            errorsCopy.salary = '';
-        } else {
-            errorsCopy.salary = 'Salary is required';
-            valid = false;
-        }
-    
-        if (leaveStartDate.trim()) {
-            errorsCopy.leaveStartDate = '';
-        } else {
-            errorsCopy.leaveStartDate = 'Leave Start Date is required';
-            valid = false;
-        }
-    
-        if (leaveEndDate.trim()) {
-            errorsCopy.leaveEndDate = '';
-        } else {
-            errorsCopy.leaveEndDate = 'Leave End Date is required';
-            valid = false;
+        if (Object.keys(newErrors).length > 0) {
+            return;
         }
 
-        if (!leaveStatus) {
-            errorsCopy.leaveStatus = 'Leave Status is required';
-            valid = false;
-        } else {
-            errorsCopy.leaveStatus = '';
+        // Prepare the payroll data to update
+        const payrollData = {
+            name,
+            surname,
+            company,
+            salary: parseFloat(salary),
+            leaveStartDate,
+            leaveEndDate,
+            leaveStatus,
+            deductions: parseFloat(deductions),
+            rebate: parseFloat(rebate),
+        };
+
+        try {
+            // Update payroll and employee
+            await updatePayroll(id, payrollData);
+            await updateEmployee(id, payrollData); // Assuming employee data also needs to be updated
+            navigate('/payroll'); // Redirect to payroll page or wherever appropriate
+        } catch (error) {
+            console.error('Error updating payroll:', error);
         }
-    
-        setErrors(errorsCopy);
-        return valid;
-    }
+    };
+
+    // Handle leave dates change
+    useEffect(() => {
+        calculateLeaveStatus(leaveStartDate, leaveEndDate);
+    }, [leaveStartDate, leaveEndDate]);
 
     return (
-        <div className='container'>
-            <h2 className='text-center'>{id ? 'Update Payroll' : 'Add Payroll'}</h2>
-            <form onSubmit={saveOrUpdatePayroll}>
-                {/* Render form fields with validation */}
-                <div className='form-group mb-2'>
-                    <label className='form-label'>Name</label>
-                    <input
-                        type='text'
-                        placeholder='Enter Name'
-                        value={name}
-                        className={`form-control ${errors.name ? 'is-invalid' : ''}`}
-                        onChange={(e) => setName(e.target.value)}
+        <div>
+            <h2>Update Payroll</h2>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label>Name</label>
+                    <input 
+                        type="text" 
+                        value={name} 
+                        onChange={(e) => setName(e.target.value)} 
                     />
-                    {errors.name && <div className='invalid-feedback'>{errors.name}</div>}
+                    {errors.name && <p>{errors.name}</p>}
                 </div>
-                <div className='form-group mb-2'>
-                    <label className='form-label'>Surname</label>
-                    <input
-                        type='text'
-                        placeholder='Enter Surname'
-                        value={surname}
-                        className={`form-control ${errors.surname ? 'is-invalid' : ''}`}
-                        onChange={(e) => setSurname(e.target.value)}
+                <div>
+                    <label>Surname</label>
+                    <input 
+                        type="text" 
+                        value={surname} 
+                        onChange={(e) => setSurname(e.target.value)} 
                     />
-                    {errors.surname && <div className='invalid-feedback'>{errors.surname}</div>}
+                    {errors.surname && <p>{errors.surname}</p>}
                 </div>
-                <div className='form-group mb-2'>
-                    <label className='form-label'>Company</label>
-                    <input
-                        type='text'
-                        placeholder='Enter Company'
-                        value={company}
-                        className={`form-control ${errors.company ? 'is-invalid' : ''}`}
-                        onChange={(e) => setCompany(e.target.value)}
+                <div>
+                    <label>Company</label>
+                    <input 
+                        type="text" 
+                        value={company} 
+                        onChange={(e) => setCompany(e.target.value)} 
                     />
-                    {errors.company && <div className='invalid-feedback'>{errors.company}</div>}
+                    {errors.company && <p>{errors.company}</p>}
                 </div>
-                <div className='form-group mb-2'>
-                    <label className='form-label'>Salary</label>
-                    <input
-                        type='text'
-                        placeholder='Enter Salary'
-                        value={salary}
-                        className={`form-control ${errors.salary ? 'is-invalid' : ''}`}
-                        onChange={(e) => setSalary(e.target.value)}
+                <div>
+                    <label>Salary</label>
+                    <input 
+                        type="number" 
+                        value={salary} 
+                        onChange={(e) => setSalary(e.target.value)} 
                     />
-                    {errors.salary && <div className='invalid-feedback'>{errors.salary}</div>}
+                    {errors.salary && <p>{errors.salary}</p>}
                 </div>
-                <div className='form-group mb-2'>
-                    <label className='form-label'>Leave Start Date</label>
-                    <input
-                        type='date'
-                        value={leaveStartDate}
-                        className={`form-control ${errors.leaveStartDate ? 'is-invalid' : ''}`}
-                        onChange={(e) => {
-                            setLeaveStartDate(e.target.value);
-                            calculateLeaveStatus(e.target.value, leaveEndDate);
-                        }}
+                <div>
+                    <label>Leave Start Date</label>
+                    <input 
+                        type="date" 
+                        value={leaveStartDate} 
+                        onChange={(e) => setLeaveStartDate(e.target.value)} 
                     />
-                    {errors.leaveStartDate && <div className='invalid-feedback'>{errors.leaveStartDate}</div>}
+                    {errors.leaveStartDate && <p>{errors.leaveStartDate}</p>}
                 </div>
-                <div className='form-group mb-2'>
-                    <label className='form-label'>Leave End Date</label>
-                    <input
-                        type='date'
-                        value={leaveEndDate}
-                        className={`form-control ${errors.leaveEndDate ? 'is-invalid' : ''}`}
-                        onChange={(e) => {
-                            setLeaveEndDate(e.target.value);
-                            calculateLeaveStatus(leaveStartDate, e.target.value);
-                        }}
+                <div>
+                    <label>Leave End Date</label>
+                    <input 
+                        type="date" 
+                        value={leaveEndDate} 
+                        onChange={(e) => setLeaveEndDate(e.target.value)} 
                     />
-                    {errors.leaveEndDate && <div className='invalid-feedback'>{errors.leaveEndDate}</div>}
+                    {errors.leaveEndDate && <p>{errors.leaveEndDate}</p>}
                 </div>
-                <div className='form-group mb-2'>
-                    <label className='form-label'>Leave Status</label>
-                    <select
-                        value={leaveStatus}
-                        className={`form-control ${errors.leaveStatus ? 'is-invalid' : ''}`}
-                        onChange={(e) => setLeaveStatus(e.target.value)}
-                    >
-                        <option value=''>Select Leave Status</option>
-                        <option value='Paid'>Paid</option>
-                        <option value='Unpaid'>Unpaid</option>
-                    </select>
-                    {errors.leaveStatus && <div className='invalid-feedback'>{errors.leaveStatus}</div>}
+                <div>
+                    <label>Leave Status</label>
+                    <input 
+                        type="text" 
+                        value={leaveStatus} 
+                        readOnly
+                    />
                 </div>
-                <button type='submit' className='btn btn-primary'>Save</button>
-                <button type='button' className='btn btn-secondary ms-2' onClick={() => navigate('/payrolls')}>Cancel</button>
+                <div>
+                    <label>Deductions</label>
+                    <input 
+                        type="number" 
+                        value={deductions} 
+                        onChange={(e) => setDeductions(e.target.value)} 
+                    />
+                    {errors.deductions && <p>{errors.deductions}</p>}
+                </div>
+                <div>
+                    <label>Rebate</label>
+                    <input 
+                        type="number" 
+                        value={rebate} 
+                        onChange={(e) => setRebate(e.target.value)} 
+                    />
+                    {errors.rebate && <p>{errors.rebate}</p>}
+                </div>
+                <button type="submit">Update Payroll</button>
             </form>
         </div>
     );
-}
+};
 
 export default PayrollUpdatePage;
