@@ -18,8 +18,6 @@ MySQL (for the database)
 Instructions
 Clone the repository:
 bash
-Copy code
-git clone https://github.com/joshchif3/employee-management-system.git
 cd employee-management-system
 Install frontend dependencies:
 bash
