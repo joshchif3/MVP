@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { getAllPayrolls, calculateUIF } from '../services/payrollService';
 import { useNavigate } from 'react-router-dom';
 
-
 const MAX_LEAVE_DAYS_PER_MONTH = 1.5;
 
 const PayrollTable = () => {
@@ -19,11 +18,11 @@ const PayrollTable = () => {
             const response = await getAllPayrolls();
             const payrollsWithUIF = await Promise.all(response.data.map(async (payroll) => {
                 try {
-                    const uifResponse = await calculateUIF(payroll.salaryPerMonth);
+                    const uifResponse = await calculateUIF(payroll.salary);
                     return {
                         ...payroll,
                         uiF: uifResponse.data,
-                        leaveStatus: payroll.leaveDaysTakenPerMonth > MAX_LEAVE_DAYS_PER_MONTH ? 'Unpaid' : 'Paid'
+                        leaveStatus: payroll.leaveDaysTaken > MAX_LEAVE_DAYS_PER_MONTH ? 'Unpaid' : 'Paid'
                     };
                 } catch (error) {
                     console.error(error);
@@ -58,16 +57,16 @@ const PayrollTable = () => {
             payroll.surname || '',
             payroll.company || '',
             payroll.salary || '',
-            payroll.salaryAfterTaxPerYear || '',
-            payroll.salaryPerMonth || '',
-            payroll.salaryAfterTaxPerMonth || '',
+            payroll.salaryAfterTax || '',
             payroll.leaveStartDate || '',
             payroll.leaveEndDate || '',
             payroll.leaveDaysTaken || '',
             payroll.leaveDaysLeft || '',
             payroll.isLeavePaid ? 'Paid' : 'Unpaid',
-            payroll.deductions || '',
-            payroll.rebate || '',
+            payroll.salaryPerYear || '',
+            payroll.salaryAfterTaxPerYear || '',
+            payroll.salaryPerMonth || '',
+            payroll.salaryAfterTaxPerMonth || '',
             payroll.uiF || ''
         ];
         return fields.some(field => field.toString().toLowerCase().includes(searchTerm.toLowerCase()));
@@ -106,17 +105,17 @@ const PayrollTable = () => {
                         <th>Name</th>
                         <th>Surname</th>
                         <th>Company</th>
-                        <th>Salary (Yearly)</th>
-                        <th>Salary After Tax (Yearly)</th>
-                        <th>Salary (Monthly)</th>
-                        <th>Salary After Tax (Monthly)</th>
+                        <th>Salary</th>
+                        <th>Salary After Tax</th>
                         <th>Leave Start Date</th>
                         <th>Leave End Date</th>
                         <th>Leave Days Taken</th>
                         <th>Leave Days Left</th>
                         <th>Leave Status</th>
-                        <th>Deductions</th>
-                        <th>Rebate</th>
+                        <th>Salary Per Year</th>
+                        <th>Salary After Tax Per Year</th>
+                        <th>Salary Per Month</th>
+                        <th>Salary After Tax Per Month</th>
                         <th>UIF</th>
                         <th>ACTIONS</th>
                     </tr>
@@ -128,34 +127,27 @@ const PayrollTable = () => {
                             <td>{payroll.surname || 'N/A'}</td>
                             <td>{payroll.company || 'N/A'}</td>
                             <td>{payroll.salary ? `R${payroll.salary}` : 'N/A'}</td>
-                            <td>{payroll.salaryAfterTaxPerYear ? `R${payroll.salaryAfterTaxPerYear}` : 'N/A'}</td>
-                            <td>{payroll.salaryPerMonth ? `R${payroll.salaryPerMonth}` : 'N/A'}</td>
-                            <td>{payroll.salaryAfterTaxPerMonth ? `R${payroll.salaryAfterTaxPerMonth}` : 'N/A'}</td>
+                            <td>{payroll.salaryAfterTax ? `R${payroll.salaryAfterTax}` : 'N/A'}</td>
                             <td>{payroll.leaveStartDate ? new Date(payroll.leaveStartDate).toLocaleDateString() : 'N/A'}</td>
                             <td>{payroll.leaveEndDate ? new Date(payroll.leaveEndDate).toLocaleDateString() : 'N/A'}</td>
                             <td>{payroll.leaveDaysTaken || 'N/A'}</td>
                             <td>{payroll.leaveDaysLeft || 'N/A'}</td>
                             <td>{payroll.isLeavePaid ? 'Paid' : 'Unpaid'}</td>
-                            <td>{payroll.deductions ? `R${payroll.deductions}` : 'N/A'}</td>
-                            <td>{payroll.rebate ? `R${payroll.rebate}` : 'N/A'}</td>
+                            <td>{payroll.salaryPerYear ? `R${payroll.salaryPerYear}` : 'N/A'}</td>
+                            <td>{payroll.salaryAfterTaxPerYear ? `R${payroll.salaryAfterTaxPerYear}` : 'N/A'}</td>
+                            <td>{payroll.salaryPerMonth ? `R${payroll.salaryPerMonth}` : 'N/A'}</td>
+                            <td>{payroll.salaryAfterTaxPerMonth ? `R${payroll.salaryAfterTaxPerMonth}` : 'N/A'}</td>
                             <td>{payroll.uiF ? `R${payroll.uiF}` : 'N/A'}</td>
-                            <td>
-                                <button className="btn btn-primary btn-sm" onClick={() => handleUpdatePayroll(payroll.id)}>
-                                    Update
-                                </button>
-                                <button className="btn btn-secondary btn-sm mx-2" onClick={() => handleGeneratePayslip(payroll.id)}>
-                                    Generate Payslip
-                                </button>
+                            <td className='action-buttons'>
+                                <button className='btn btn-info' onClick={() => handleUpdatePayroll(payroll.id)}>Update</button>
+                                <button className='btn btn-secondary' onClick={() => handleGeneratePayslip(payroll.id)}>Payslip</button>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
-            <button className="btn btn-success" onClick={handleAddNewPayroll}>
-                Add New Payroll
-            </button>
         </div>
     );
-};
+}
 
 export default PayrollTable;

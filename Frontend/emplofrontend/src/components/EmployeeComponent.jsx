@@ -58,23 +58,23 @@ const EmployeeComponent = () => {
 
     function saveOrUpdateEmployee(e) {
         e.preventDefault();
-    
+
         if (validateForm()) {
-            const employee = { 
-                name: firstname, 
-                surname: lastname, 
-                address, 
-                company, 
-                companyTerm, 
-                email, 
-                endDate, 
-                location, 
-                role, 
-                salary, 
-                startDate, 
-                status 
+            const employee = {
+                name: firstname,
+                surname: lastname,
+                address,
+                company,
+                companyTerm,
+                email,
+                endDate,
+                location,
+                role,
+                salary,
+                startDate,
+                status
             };
-    
+
             if (id) {
                 updateEmployee(id, employee).then((response) => {
                     console.log(response.data);
@@ -94,7 +94,7 @@ const EmployeeComponent = () => {
     }
 
     function cancel() {
-        navigate('/employees'); // Navigate to the employee list or another desired page
+        navigate('/employees');
     }
 
     function validateForm() {
@@ -164,7 +164,6 @@ const EmployeeComponent = () => {
             valid = false;
         }
 
-        // Handle salary validation
         if (salary || salary === 0) {
             errorsCopy.salary = '';
         } else {
@@ -191,168 +190,243 @@ const EmployeeComponent = () => {
     }
 
     function pageTitle() {
-        return id ? <h2 className='text-center'>Update Employee</h2> : <h2 className='text-center'>Add Employee</h2>;
+        return id ? <h2 style={styles.title}>Update Employee</h2> : <h2 style={styles.title}>Add Employee</h2>;
     }
 
     return (
-        <div className='container'>
-            <br />
-            <div className='row'>
-                <div className='card'>
-                    {pageTitle()}
-                    <div className='card-body'>
-                        <form onSubmit={saveOrUpdateEmployee}>
-                            {/* Input fields */}
-                            <div className='form-group mb-2'>
-                                <label className='form-label'>First Name</label>
-                                <input
-                                    type='text'
-                                    placeholder='Enter Employee First Name'
-                                    name='firstname'
-                                    value={firstname}
-                                    className={`form-control ${errors.firstname ? 'is-invalid' : ''}`}
-                                    onChange={(e) => setFirstName(e.target.value)}
-                                />
-                                {errors.firstname && <div className='invalid-feedback'>{errors.firstname}</div>}
-                            </div>
-                            <div className='form-group mb-2'>
-                                <label className='form-label'>Last Name</label>
-                                <input
-                                    type='text'
-                                    placeholder='Enter Employee Last Name'
-                                    name='lastname'
-                                    value={lastname}
-                                    className={`form-control ${errors.lastname ? 'is-invalid' : ''}`}
-                                    onChange={(e) => setLastName(e.target.value)}
-                                />
-                                {errors.lastname && <div className='invalid-feedback'>{errors.lastname}</div>}
-                            </div>
-                            <div className='form-group mb-2'>
-                                <label className='form-label'>Email</label>
-                                <input
-                                    type='email'
-                                    placeholder='Enter Employee Email'
-                                    name='email'
-                                    value={email}
-                                    className={`form-control ${errors.email ? 'is-invalid' : ''}`}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                />
-                                {errors.email && <div className='invalid-feedback'>{errors.email}</div>}
-                            </div>
-                            <div className='form-group mb-2'>
-                                <label className='form-label'>Address</label>
-                                <input
-                                    type='text'
-                                    placeholder='Enter Employee Address'
-                                    name='address'
-                                    value={address}
-                                    className={`form-control ${errors.address ? 'is-invalid' : ''}`}
-                                    onChange={(e) => setAddress(e.target.value)}
-                                />
-                                {errors.address && <div className='invalid-feedback'>{errors.address}</div>}
-                            </div>
-                            <div className='form-group mb-2'>
-                                <label className='form-label'>Company</label>
-                                <input
-                                    type='text'
-                                    placeholder='Enter Employee Company'
-                                    name='company'
-                                    value={company}
-                                    className={`form-control ${errors.company ? 'is-invalid' : ''}`}
-                                    onChange={(e) => setCompany(e.target.value)}
-                                />
-                                {errors.company && <div className='invalid-feedback'>{errors.company}</div>}
-                            </div>
-                            <div className='form-group mb-2'>
-                                <label className='form-label'>Company Term</label>
-                                <input
-                                    type='text'
-                                    placeholder='Enter Employee Company Term'
-                                    name='companyTerm'
-                                    value={companyTerm}
-                                    className={`form-control ${errors.companyTerm ? 'is-invalid' : ''}`}
-                                    onChange={(e) => setCompanyTerm(e.target.value)}
-                                />
-                                {errors.companyTerm && <div className='invalid-feedback'>{errors.companyTerm}</div>}
-                            </div>
-                            <div className='form-group mb-2'>
-                                <label className='form-label'>End Date</label>
-                                <input
-                                    type='date'
-                                    name='endDate'
-                                    value={endDate}
-                                    className={`form-control ${errors.endDate ? 'is-invalid' : ''}`}
-                                    onChange={(e) => setEndDate(e.target.value)}
-                                />
-                                {errors.endDate && <div className='invalid-feedback'>{errors.endDate}</div>}
-                            </div>
-                            <div className='form-group mb-2'>
-                                <label className='form-label'>Location</label>
-                                <input
-                                    type='text'
-                                    placeholder='Enter Employee Location'
-                                    name='location'
-                                    value={location}
-                                    className={`form-control ${errors.location ? 'is-invalid' : ''}`}
-                                    onChange={(e) => setLocation(e.target.value)}
-                                />
-                                {errors.location && <div className='invalid-feedback'>{errors.location}</div>}
-                            </div>
-                            <div className='form-group mb-2'>
-                                <label className='form-label'>Role</label>
-                                <input
-                                    type='text'
-                                    placeholder='Enter Employee Role'
-                                    name='role'
-                                    value={role}
-                                    className={`form-control ${errors.role ? 'is-invalid' : ''}`}
-                                    onChange={(e) => setRole(e.target.value)}
-                                />
-                                {errors.role && <div className='invalid-feedback'>{errors.role}</div>}
-                            </div>
-                            <div className='form-group mb-2'>
-                                <label className='form-label'>Salary</label>
-                                <input
-                                    type='number'
-                                    placeholder='Enter Employee Salary'
-                                    name='salary'
-                                    value={salary}
-                                    className={`form-control ${errors.salary ? 'is-invalid' : ''}`}
-                                    onChange={(e) => setSalary(e.target.value)}
-                                />
-                                {errors.salary && <div className='invalid-feedback'>{errors.salary}</div>}
-                            </div>
-                            <div className='form-group mb-2'>
-                                <label className='form-label'>Start Date</label>
-                                <input
-                                    type='date'
-                                    name='startDate'
-                                    value={startDate}
-                                    className={`form-control ${errors.startDate ? 'is-invalid' : ''}`}
-                                    onChange={(e) => setStartDate(e.target.value)}
-                                />
-                                {errors.startDate && <div className='invalid-feedback'>{errors.startDate}</div>}
-                            </div>
-                            <div className='form-group mb-2'>
-                                <label className='form-label'>Status</label>
-                                <input
-                                    type='text'
-                                    placeholder='Enter Employee Status'
-                                    name='status'
-                                    value={status}
-                                    className={`form-control ${errors.status ? 'is-invalid' : ''}`}
-                                    onChange={(e) => setStatus(e.target.value)}
-                                />
-                                {errors.status && <div className='invalid-feedback'>{errors.status}</div>}
-                            </div>
-                            <button type='submit' className='btn btn-primary'>Save</button>
-                            <button type='button' className='btn btn-secondary ms-2' onClick={cancel}>Cancel</button>
-                        </form>
-                    </div>
+        <div style={styles.container}>
+            <div style={styles.card}>
+                {pageTitle()}
+                <div style={styles.cardBody}>
+                    <form onSubmit={saveOrUpdateEmployee}>
+                        {/* Input fields */}
+                        <div style={styles.formGroup}>
+                            <label style={styles.label}>First Name</label>
+                            <input
+                                type='text'
+                                placeholder='Enter Employee First Name'
+                                name='firstname'
+                                value={firstname}
+                                style={errors.firstname ? styles.invalidInput : styles.input}
+                                onChange={(e) => setFirstName(e.target.value)}
+                            />
+                            {errors.firstname && <div style={styles.invalidFeedback}>{errors.firstname}</div>}
+                        </div>
+                        <div style={styles.formGroup}>
+                            <label style={styles.label}>Last Name</label>
+                            <input
+                                type='text'
+                                placeholder='Enter Employee Last Name'
+                                name='lastname'
+                                value={lastname}
+                                style={errors.lastname ? styles.invalidInput : styles.input}
+                                onChange={(e) => setLastName(e.target.value)}
+                            />
+                            {errors.lastname && <div style={styles.invalidFeedback}>{errors.lastname}</div>}
+                        </div>
+                        <div style={styles.formGroup}>
+                            <label style={styles.label}>Email</label>
+                            <input
+                                type='email'
+                                placeholder='Enter Employee Email'
+                                name='email'
+                                value={email}
+                                style={errors.email ? styles.invalidInput : styles.input}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                            {errors.email && <div style={styles.invalidFeedback}>{errors.email}</div>}
+                        </div>
+                        <div style={styles.formGroup}>
+                            <label style={styles.label}>Address</label>
+                            <input
+                                type='text'
+                                placeholder='Enter Employee Address'
+                                name='address'
+                                value={address}
+                                style={errors.address ? styles.invalidInput : styles.input}
+                                onChange={(e) => setAddress(e.target.value)}
+                            />
+                            {errors.address && <div style={styles.invalidFeedback}>{errors.address}</div>}
+                        </div>
+                        <div style={styles.formGroup}>
+                            <label style={styles.label}>Company</label>
+                            <input
+                                type='text'
+                                placeholder='Enter Employee Company'
+                                name='company'
+                                value={company}
+                                style={errors.company ? styles.invalidInput : styles.input}
+                                onChange={(e) => setCompany(e.target.value)}
+                            />
+                            {errors.company && <div style={styles.invalidFeedback}>{errors.company}</div>}
+                        </div>
+                        <div style={styles.formGroup}>
+                            <label style={styles.label}>Company Term</label>
+                            <input
+                                type='text'
+                                placeholder='Enter Employee Company Term'
+                                name='companyTerm'
+                                value={companyTerm}
+                                style={errors.companyTerm ? styles.invalidInput : styles.input}
+                                onChange={(e) => setCompanyTerm(e.target.value)}
+                            />
+                            {errors.companyTerm && <div style={styles.invalidFeedback}>{errors.companyTerm}</div>}
+                        </div>
+                        <div style={styles.formGroup}>
+                            <label style={styles.label}>End Date</label>
+                            <input
+                                type='date'
+                                name='endDate'
+                                value={endDate}
+                                style={errors.endDate ? styles.invalidInput : styles.input}
+                                onChange={(e) => setEndDate(e.target.value)}
+                            />
+                            {errors.endDate && <div style={styles.invalidFeedback}>{errors.endDate}</div>}
+                        </div>
+                        <div style={styles.formGroup}>
+                            <label style={styles.label}>Location</label>
+                            <input
+                                type='text'
+                                placeholder='Enter Employee Location'
+                                name='location'
+                                value={location}
+                                style={errors.location ? styles.invalidInput : styles.input}
+                                onChange={(e) => setLocation(e.target.value)}
+                            />
+                            {errors.location && <div style={styles.invalidFeedback}>{errors.location}</div>}
+                        </div>
+                        <div style={styles.formGroup}>
+                            <label style={styles.label}>Role</label>
+                            <input
+                                type='text'
+                                placeholder='Enter Employee Role'
+                                name='role'
+                                value={role}
+                                style={errors.role ? styles.invalidInput : styles.input}
+                                onChange={(e) => setRole(e.target.value)}
+                            />
+                            {errors.role && <div style={styles.invalidFeedback}>{errors.role}</div>}
+                        </div>
+                        <div style={styles.formGroup}>
+                            <label style={styles.label}>Salary</label>
+                            <input
+                                type='number'
+                                placeholder='Enter Employee Salary'
+                                name='salary'
+                                value={salary}
+                                style={errors.salary ? styles.invalidInput : styles.input}
+                                onChange={(e) => setSalary(e.target.value)}
+                            />
+                            {errors.salary && <div style={styles.invalidFeedback}>{errors.salary}</div>}
+                        </div>
+                        <div style={styles.formGroup}>
+                            <label style={styles.label}>Start Date</label>
+                            <input
+                                type='date'
+                                name='startDate'
+                                value={startDate}
+                                style={errors.startDate ? styles.invalidInput : styles.input}
+                                onChange={(e) => setStartDate(e.target.value)}
+                            />
+                            {errors.startDate && <div style={styles.invalidFeedback}>{errors.startDate}</div>}
+                        </div>
+                        <div style={styles.formGroup}>
+                            <label style={styles.label}>Status</label>
+                            <input
+                                type='text'
+                                placeholder='Enter Employee Status'
+                                name='status'
+                                value={status}
+                                style={errors.status ? styles.invalidInput : styles.input}
+                                onChange={(e) => setStatus(e.target.value)}
+                            />
+                            {errors.status && <div style={styles.invalidFeedback}>{errors.status}</div>}
+                        </div>
+
+                        <div style={styles.buttonContainer}>
+                            <button type='submit' style={styles.saveButton}>Save</button>
+                            <button type='button' style={styles.cancelButton} onClick={cancel}>Cancel</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     );
+};
+
+const styles = {
+    container: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '100vh',
+        backgroundColor: '#f4f4f4',
+        padding: '20px'
+    },
+    card: {
+        backgroundColor: '#fff',
+        borderRadius: '8px',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+        width: '100%',
+        maxWidth: '600px',
+        padding: '20px'
+    },
+    cardBody: {
+        marginTop: '20px'
+    },
+    title: {
+        fontSize: '24px',
+        marginBottom: '20px',
+        textAlign: 'center',
+        color: '#333'
+    },
+    formGroup: {
+        marginBottom: '15px'
+    },
+    label: {
+        display: 'block',
+        marginBottom: '5px',
+        fontWeight: 'bold'
+    },
+    input: {
+        width: '100%',
+        padding: '10px',
+        border: '1px solid #ccc',
+        borderRadius: '4px',
+        boxSizing: 'border-box'
+    },
+    invalidInput: {
+        width: '100%',
+        padding: '10px',
+        border: '1px solid red',
+        borderRadius: '4px',
+        boxSizing: 'border-box'
+    },
+    invalidFeedback: {
+        color: 'red',
+        fontSize: '12px',
+        marginTop: '5px'
+    },
+    buttonContainer: {
+        display: 'flex',
+        justifyContent: 'space-between'
+    },
+    saveButton: {
+        backgroundColor: '#007bff',
+        color: '#fff',
+        border: 'none',
+        padding: '10px 20px',
+        borderRadius: '4px',
+        cursor: 'pointer'
+    },
+    cancelButton: {
+        backgroundColor: '#6c757d',
+        color: '#fff',
+        border: 'none',
+        padding: '10px 20px',
+        borderRadius: '4px',
+        cursor: 'pointer'
+    }
 };
 
 export default EmployeeComponent;

@@ -1,0 +1,28 @@
+/* components/ExpensesTable.css */
+
+.table {
+    margin-top: 20px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.table th,
+.table td {
+    vertical-align: middle;
+    text-align: center;
+}
+
+.action-buttons {
+    display: flex; /* Use flexbox to align buttons horizontally */
+    gap: 10px; /* Space between the buttons */
+}
+
+.btn-info {
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
